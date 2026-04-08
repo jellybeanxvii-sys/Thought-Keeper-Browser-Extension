@@ -160,8 +160,9 @@
 .tk-actions {
   padding: 24px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 12px;
+  justify-content: center;
 }
 
 .tk-actions button {
@@ -221,7 +222,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.9)) padding-box,
-    linear-gradient(135deg, #e879f9 0%, #c084fc 50%, #60a5fa 100%) border-box;
+    linear-gradient(135deg, #f9c3dc 0%, #d6b9ff 50%, #bae8ff 100%) border-box;
 }
 
 .tk-actions button:active {
