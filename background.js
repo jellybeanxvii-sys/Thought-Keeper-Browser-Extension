@@ -44,30 +44,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function translateText(text, lang) {
-  const response = await fetch("https://libretranslate.de/translate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      q: text,
-      source: "auto",
-      target: lang,
-      format: "text",
-    }),
-  });
+  try {
+    // Using a simple translation approach - for demo purposes
+    // In production, you'd want a proper translation API
+    const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${lang}`, {
+      method: "GET",
+    });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Translate API error: ${response.status} ${errorText}`);
+    if (!response.ok) {
+      throw new Error(`Translation API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (data.responseData && data.responseData.translatedText) {
+      return data.responseData.translatedText;
+    } else {
+      throw new Error("Translation API returned no translated text");
+    }
+  } catch (err) {
+    console.error("Translation error:", err);
+    // Fallback: return original text with a note
+    return `${text} (Translation unavailable - ${err.message})`;
   }
-
-  const data = await response.json();
-  if (!data.translatedText) {
-    throw new Error("Translate API returned no translatedText");
-  }
-
-  return data.translatedText;
 }
 
 async function explainText(text) {
@@ -83,7 +81,7 @@ async function explainText(text) {
         "Authorization": `Bearer ${GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: "llama3-70b-8192",
+        model: "llama-3.1-8b-instant",
         messages: [
           { role: "system", content: "Explain this like I'm 5 in the simplest way possible." },
           { role: "user", content: text }
