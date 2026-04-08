@@ -229,32 +229,27 @@ function openPopup(text) {
   // card.querySelector("#explain").addEventListener("click", () => {
   //   alert("This would simplify text (AI feature to add later).");
   // });
-  card.querySelector("#explain").addEventListener("click", async () => {
-    const response = await new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage(
-        {
-          type: "explain",
-          text: text,
-        },
-        (resp) => {
-          if (chrome.runtime.lastError) {
-            reject(chrome.runtime.lastError);
-            return;
-          }
-          resolve(resp);
+  card.querySelector("#explain").addEventListener("click", () => {
+    chrome.runtime.sendMessage(
+      {
+        type: "explain",
+        text: text,
+      },
+      (response) => {
+        if (chrome.runtime.lastError) {
+          console.error("Explain sendMessage error:", chrome.runtime.lastError);
+          alert("Failed to explain text.");
+          return;
         }
-      );
-    }).catch((err) => {
-      console.error("Explain sendMessage error:", err);
-      return null;
-    });
 
-    if (response && response.success) {
-      alert("Explanation:\n\n" + response.result);
-    } else {
-      console.error(response?.error || "No response from explain handler");
-      alert("Failed to explain text.");
-    }
+        if (response && response.success) {
+          alert("Explanation:\n\n" + response.result);
+        } else {
+          console.error(response?.error || "No response from explain handler");
+          alert("Failed to explain text.");
+        }
+      }
+    );
   });
 
 
@@ -262,34 +257,28 @@ function openPopup(text) {
   card.querySelector("#translate").addEventListener("click", (e) => {
     e.stopPropagation();
 
-    openLanguageMenu(e.pageX, e.pageY, async (chosenLang) => {
-      const response = await new Promise((resolve, reject) => {
-        chrome.runtime.sendMessage(
-          {
-            type: "TRANSLATE_TEXT",
-            text,
-            lang: chosenLang,
-          },
-          (resp) => {
-            if (chrome.runtime.lastError) {
-              reject(chrome.runtime.lastError);
-              return;
-            }
-            resolve(resp);
+    openLanguageMenu(e.pageX, e.pageY, (chosenLang) => {
+      chrome.runtime.sendMessage(
+        {
+          type: "TRANSLATE_TEXT",
+          text,
+          lang: chosenLang,
+        },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            console.error("Translate sendMessage error:", chrome.runtime.lastError);
+            alert("Translation failed. Please try again.");
+            return;
           }
-        );
-      }).catch((err) => {
-        console.error("Translate sendMessage error:", err);
-        return null;
-      });
 
-      if (!response || !response.success) {
-        console.error("Translate response error:", response);
-        alert("Translation failed. Please try again.");
-        return;
-      }
-
-      alert("Translation (" + chosenLang + "):\n\n" + response.translated);
+          if (response && response.success) {
+            alert("Translation (" + chosenLang + "):\n\n" + response.translated);
+          } else {
+            console.error("Translate response error:", response);
+            alert("Translation failed. Please try again.");
+          }
+        }
+      );
     });
   });
 }
