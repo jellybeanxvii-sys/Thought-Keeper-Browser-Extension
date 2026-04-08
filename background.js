@@ -42,30 +42,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true; // keep message channel open
   }
 });
-  if (message.type === "TRANSLATE_TEXT") {
-    translateText(message.text, message.lang)
-      .then((translated) => {
-        sendResponse({ success: true, translated });
-      })
-      .catch((err) => {
-        console.error("Translation error:", err);
-        sendResponse({ success: false, error: "Translation failed." });
-      });
-
-    return true; // keeps message channel open
-  }
-
-  if (message.type === "explain") {
-    explainText(message.text)
-      .then((result) => sendResponse(result))
-      .catch((err) => {
-        console.error("Explain handler error:", err);
-        sendResponse({ success: false, error: "Error explaining text." });
-      });
-
-    return true; // keep message channel open
-  }
-});
 
 async function translateText(text, lang) {
   const response = await fetch("https://libretranslate.de/translate", {
