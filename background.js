@@ -1,9 +1,47 @@
 //testing only. delete later
 
-const GROQ_API_KEY = "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";
+// Load API key from storage (set via options page)
+let GROQ_API_KEY = null;
+
+async function loadApiKey() {
+  const result = await chrome.storage.local.get(['groqApiKey']);
+  GROQ_API_KEY = result.groqApiKey || null;
+}
+
+// Initialize on startup
+loadApiKey();
 
 // Listen for requests from popup.js and content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "reloadApiKey") {
+    loadApiKey().then(() => sendResponse({ success: true }));
+    return true;
+  }
+
+  if (message.type === "TRANSLATE_TEXT") {
+    translateText(message.text, message.lang)
+      .then((translated) => {
+        sendResponse({ success: true, translated });
+      })
+      .catch((err) => {
+        console.error("Translation error:", err);
+        sendResponse({ success: false, error: "Translation failed." });
+      });
+
+    return true; // keeps message channel open
+  }
+
+  if (message.type === "explain") {
+    explainText(message.text)
+      .then((result) => sendResponse(result))
+      .catch((err) => {
+        console.error("Explain handler error:", err);
+        sendResponse({ success: false, error: "Error explaining text." });
+      });
+
+    return true; // keep message channel open
+  }
+});
   if (message.type === "TRANSLATE_TEXT") {
     translateText(message.text, message.lang)
       .then((translated) => {
@@ -57,6 +95,10 @@ async function translateText(text, lang) {
 }
 
 async function explainText(text) {
+  if (!GROQ_API_KEY) {
+    return { success: false, error: "API key not configured. Please set your Groq API key in the extension options." };
+  }
+
   try {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
