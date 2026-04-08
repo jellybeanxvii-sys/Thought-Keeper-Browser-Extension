@@ -1,5 +1,8 @@
 // content.js
-console.log("Thought Keeper content script loaded");
+const link = document.createElement('link');
+link.href = 'https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&display=swap';
+link.rel = 'stylesheet';
+document.head.appendChild(link);
 
 // remove excess highlighting
 document.addEventListener("mouseup", (event) => {

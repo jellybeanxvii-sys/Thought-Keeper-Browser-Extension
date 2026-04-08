@@ -6,28 +6,21 @@ let GROQ_API_KEY = null;
 async function loadApiKey() {
   const result = await chrome.storage.local.get(['groqApiKey']);
   GROQ_API_KEY = result.groqApiKey || null;
-  console.log("Loaded API key:", GROQ_API_KEY ? "present" : "not set");
 }
 
 // Initialize on startup
 loadApiKey();
 
-console.log("Thought Keeper background script loaded");
-
 // Listen for requests from popup.js and content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log("Background received message:", message.type);
-
   if (message.type === "reloadApiKey") {
     loadApiKey().then(() => sendResponse({ success: true }));
     return true;
   }
 
   if (message.type === "TRANSLATE_TEXT") {
-    console.log("Processing translate request for:", message.lang);
     translateText(message.text, message.lang)
       .then((translated) => {
-        console.log("Translation successful");
         sendResponse({ success: true, translated });
       })
       .catch((err) => {
@@ -39,12 +32,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === "explain") {
-    console.log("Processing explain request");
     explainText(message.text)
-      .then((result) => {
-        console.log("Explain successful");
-        sendResponse(result);
-      })
+      .then((result) => sendResponse(result))
       .catch((err) => {
         console.error("Explain handler error:", err);
         sendResponse({ success: false, error: "Error explaining text." });
