@@ -4,7 +4,7 @@
   "version": "1.0",
   "description": "Capture, simplify, translate, and reflect on ideas from the web!",
   "permissions": ["storage", "activeTab", "scripting"],
-  "host_permissions": ["https://api.groq.com/*", "https://libretranslate.de/*"],
+  "host_permissions": ["https://api.groq.com/*", "https://api.mymemory.translated.net/*"],
   "options_page": "options.html",
   "icons": {
     "16":"icons/tkLogo1.png", 
