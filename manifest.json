@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Thought Keeper",
+  "version": "1.0",
+  "description": "Capture, simplify, translate, and reflect on ideas from the web!",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["https://api.groq.com/*", "https://libretranslate.de/*"],
+  "icons": {
+    "16":"icons/tkLogo1.png", 
+    "48":"icons/tkLogo1.png", 
+    "128":"icons/tkLogo1.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html" 
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "web_accessible_resources": [
+  {
+    "resources": ["icons/tkLogo1.png"],
+    "matches": ["<all_urls>"]
+  }
+]
+
+}

@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&display=swap');
+
+html, body, * {
+  font-family: 'Dongle', sans-serif !important;
+}
+
+body {
+width:400px;
+padding: 10px;
+font-size: 23px;
+font-family: "Dongle", sans-serif;
+line-height: 1.2;
+margin: 10px;
+color: #333;
+}
+
+h1{
+color: rgb(65, 131, 110);
+}
+
+.thought{
+margin-bottom:10px;
+}
+
+.tk-vault{
+  width: 25px;
+  height: 25px;
+}
