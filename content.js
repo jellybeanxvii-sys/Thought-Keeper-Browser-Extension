@@ -170,24 +170,32 @@ function openPopup(text) {
   card.className = "tk-card";
   card.innerHTML = `
   <div class="tk-header">
-    <span class="tk-title">Thought Keeper</span>
-    <img src="${chrome.runtime.getURL("icons/tkLogo1.png")}" class="tk-logo"/>
-    <button class="tk-close">x</button>
-  </div>
-    <p class="tk-snippet">${text}</p>
-    <div class="tk-actions">
-      <button class="tk-option" id="explain">
-        <span class="sparkle-icon">
-          <span class="sparkle-medium"></span>
-          <span class="sparkle-tiny"></span>
-          <span class="sparkle-large"></span>
-        </span>
-        Explain Like I'm 5
-      </button>
-
-      <button class="tk-option" id="translate">Translate</button>
-      <button class="tk-option" id="reflect">Add Note</button>
+    <div class="tk-title-group">
+      <img src="${chrome.runtime.getURL("icons/tkLogo1.png")}" class="tk-logo" alt="Thought Keeper logo" />
+      <div>
+        <h2 class="tk-title">Thought Keeper</h2>
+        <p class="tk-subtitle">Smart actions for your selected text</p>
+      </div>
     </div>
+    <button class="tk-close" aria-label="Close popup">×</button>
+  </div>
+  <div class="tk-content">
+    <p class="tk-snippet">${text}</p>
+  </div>
+  <div class="tk-actions">
+    <button class="tk-action-button" id="explain">
+      <span class="button-icon">💡</span>
+      <span>Explain Like I'm 5</span>
+    </button>
+    <button class="tk-action-button" id="translate">
+      <span class="button-icon">🌍</span>
+      <span>Translate</span>
+    </button>
+    <button class="tk-action-button" id="reflect">
+      <span class="button-icon">📝</span>
+      <span>Add Note</span>
+    </button>
+  </div>
   `;
 
   const popupOverlay = document.createElement("div");
