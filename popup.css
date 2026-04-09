@@ -5,24 +5,161 @@ html, body, * {
 }
 
 body {
-width:400px;
-padding: 10px;
-font-size: 23px;
-font-family: "Dongle", sans-serif;
-line-height: 1.2;
-margin: 10px;
-color: #333;
+  width: 400px;
+  padding: 14px;
+  font-size: 22px;
+  line-height: 1.35;
+  margin: 0;
+  color: #333;
+  background: rgba(255, 255, 255, 0.98);
 }
 
-h1{
-color: rgb(65, 131, 110);
+.vault-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
-.thought{
-margin-bottom:10px;
+h1 {
+  color: rgb(65, 131, 110);
+  font-size: 24px;
+  margin: 0;
 }
 
-.tk-vault{
-  width: 25px;
-  height: 25px;
+.thought {
+  margin-bottom: 12px;
+  padding: 14px 14px 10px;
+  border-radius: 16px;
+  background: rgba(246, 253, 249, 0.95);
+  border: 1px solid rgba(129, 202, 173, 0.25);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+}
+
+.thought-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.thought-title-group p,
+.thought-title-group small {
+  margin: 0;
+}
+
+.thought-original {
+  font-size: 17px;
+  color: #1f3a24;
+}
+
+.thought-original strong {
+  font-weight: 700;
+}
+
+.thought-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+}
+
+.icon-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 1);
+}
+
+.delete-all {
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid #e53e3e;
+  background: #fff5f5;
+  color: #c53030;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.delete-all:hover {
+  background: #fed7d7;
+  transform: translateY(-1px);
+}
+
+.thought-note {
+  margin-bottom: 6px;
+}
+
+.thought-note p {
+  margin: 0;
+  color: #3a3a3a;
+  font-size: 16px;
+}
+
+.thought-edit-textarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  font-family: 'Dongle', sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.edit-button-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: flex-end;
+}
+
+.save-edit,
+.cancel-edit {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.save-edit {
+  background: rgb(72, 187, 120);
+  color: white;
+}
+
+.save-edit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(72, 187, 120, 0.25);
+}
+
+.cancel-edit {
+  background: rgba(237, 242, 247, 0.95);
+  color: #475569;
+}
+
+.cancel-edit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(71, 85, 105, 0.15);
+}
+
+.tk-vault {
+  width: 26px;
+  height: 26px;
 }
