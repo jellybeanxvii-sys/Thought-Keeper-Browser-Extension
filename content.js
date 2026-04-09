@@ -1,6 +1,6 @@
 // content.js
 const link = document.createElement('link');
-link.href = 'https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&display=swap';
+link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Dongle:wght@400;700&display=swap';
 link.rel = 'stylesheet';
 document.head.appendChild(link);
 
@@ -203,6 +203,46 @@ function openPopup(text) {
 
   popupOverlay.appendChild(card);
   document.body.appendChild(popupOverlay);
+
+  // initial center positioning without transform so dragging works
+  card.style.left = `${Math.max((window.innerWidth - card.offsetWidth) / 2, 16)}px`;
+  card.style.top = `${Math.max((window.innerHeight - card.offsetHeight) / 2, 16)}px`;
+  card.style.transform = "none";
+
+  const header = card.querySelector(".tk-header");
+  header.style.cursor = "grab";
+
+  header.addEventListener("mousedown", (event) => {
+    if (event.button !== 0) return;
+    if (event.target.closest("button")) return;
+    event.preventDefault();
+
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const rect = card.getBoundingClientRect();
+    const offsetX = startX - rect.left;
+    const offsetY = startY - rect.top;
+
+    header.style.cursor = "grabbing";
+
+    function onMouseMove(moveEvent) {
+      const nextLeft = moveEvent.clientX - offsetX;
+      const nextTop = moveEvent.clientY - offsetY;
+      const boundedLeft = Math.min(Math.max(nextLeft, 8), window.innerWidth - card.offsetWidth - 8);
+      const boundedTop = Math.min(Math.max(nextTop, 8), window.innerHeight - card.offsetHeight - 8);
+      card.style.left = `${boundedLeft}px`;
+      card.style.top = `${boundedTop}px`;
+    }
+
+    function onMouseUp() {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      header.style.cursor = "grab";
+    }
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  });
 
   popupOverlay.addEventListener("mousedown", (e) => {
     if (e.target === popupOverlay) {
