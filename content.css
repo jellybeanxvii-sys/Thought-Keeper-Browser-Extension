@@ -74,9 +74,10 @@ body {
   position: fixed;
   display: flex;
   flex-direction: column;
-  width: min(460px, 95vw);
-  min-width: 360px;
-  min-height: 460px;
+  width: min(560px, 96vw);
+  min-width: 420px;
+  max-width: 96vw;
+  min-height: 480px;
   max-height: 92vh;
   background: var(--surface-soft);
   border: 1px solid var(--border);
