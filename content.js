@@ -170,16 +170,23 @@ function openPopup(text) {
   card.className = "tk-card";
   card.innerHTML = `
   <div class="tk-header">
-    <span class="tk-title">✨ Thought Keeper</span>
-    <button class="tk-close">×</button>
+    <span class="tk-title">Thought Keeper</span>
+    <img src="${chrome.runtime.getURL("icons/tkLogo1.png")}" class="tk-logo"/>
+    <button class="tk-close">x</button>
   </div>
     <p class="tk-snippet">${text}</p>
     <div class="tk-actions">
-      <button class="tk-option tk-explain" id="explain">
-        🤖 Explain Like I'm 5
+      <button class="tk-option" id="explain">
+        <span class="sparkle-icon">
+          <span class="sparkle-medium"></span>
+          <span class="sparkle-tiny"></span>
+          <span class="sparkle-large"></span>
+        </span>
+        Explain Like I'm 5
       </button>
-      <button class="tk-option tk-translate" id="translate">🌍 Translate</button>
-      <button class="tk-option tk-reflect" id="reflect">📝 Add Note</button>
+
+      <button class="tk-option" id="translate">Translate</button>
+      <button class="tk-option" id="reflect">Add Note</button>
     </div>
   `;
 
