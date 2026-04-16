@@ -5,28 +5,69 @@ link.rel = 'stylesheet';
 document.head.appendChild(link);
 
 // remove excess highlighting
+function isExtensionUI(element) {
+  return !!element?.closest(
+    '.tk-card, .tk-popup-overlay, .tk-modal-overlay, .tk-note-modal, .tk-lang-menu, #thoughtkeeper-btn'
+  );
+}
+
 document.addEventListener("mouseup", (event) => {
-  if (event.target.id === "thoughtkeeper-btn") return;
-  const selectedText = window.getSelection().toString().trim();
+  if (isExtensionUI(event.target)) return;
+  const selection = window.getSelection();
+  const selectedText = selection.toString().trim();
   if (!selectedText) return;
 
-  // remove old lightbulb
   const oldBtn = document.getElementById("thoughtkeeper-btn");
   if (oldBtn) oldBtn.remove();
 
-  // make lightbulb btn
   const btn = document.createElement("button");
   btn.id = "thoughtkeeper-btn";
   btn.textContent = "💡";
-  btn.style.position = "absolute";
-  btn.style.top = `${event.pageY}px`;
-  btn.style.left = `${event.pageX}px`;
   btn.className = "tk-btn";
+  btn.style.position = "absolute";
+  btn.style.zIndex = "999999";
+  btn.style.pointerEvents = "auto";
+
+  const range = selection.rangeCount ? selection.getRangeAt(0) : null;
+  if (range) {
+    const rects = range.getClientRects();
+    const rect = rects.length ? rects[rects.length - 1] : range.getBoundingClientRect();
+    const buttonSize = 46;
+    const offset = 8;
+    const pageRight = window.scrollX + rect.right;
+    const pageBottom = window.scrollY + rect.bottom;
+    const viewportRight = window.scrollX + window.innerWidth - buttonSize - offset;
+    const viewportLeft = window.scrollX + offset;
+    const viewportTop = window.scrollY + offset;
+    const viewportBottom = window.scrollY + window.innerHeight - buttonSize - offset;
+
+    let top = pageBottom - buttonSize - offset;
+    let left = pageRight + offset;
+
+    if (left > viewportRight) {
+      left = pageRight - buttonSize - offset;
+    }
+    if (left < viewportLeft) {
+      left = viewportLeft;
+    }
+    if (top < viewportTop) {
+      top = pageBottom + offset;
+    }
+    if (top > viewportBottom) {
+      top = viewportBottom;
+    }
+
+    btn.style.top = `${top}px`;
+    btn.style.left = `${left}px`;
+  } else {
+    btn.style.top = `${event.pageY}px`;
+    btn.style.left = `${event.pageX}px`;
+  }
+
   document.body.appendChild(btn);
 
-  // open popup
-  btn.addEventListener("click", () => {
-    event.stopPropagation();
+  btn.addEventListener("click", (clickEvent) => {
+    clickEvent.stopPropagation();
     openPopup(selectedText);
     btn.remove();
   });

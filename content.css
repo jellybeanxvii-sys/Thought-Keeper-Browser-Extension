@@ -1,36 +1,9 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Dongle:wght@400;700&display=swap');
-
-:root {
-  --surface: #ffffff;
-  --surface-soft: rgba(255, 255, 255, 0.92);
-  --surface-strong: rgba(241, 245, 255, 0.97);
-  --border: rgba(147, 197, 253, 0.4);
-  --text: #0f172a;
-  --muted: #475569;
-  --accent: #2563eb;
-  --accent-soft: rgba(59, 130, 246, 0.18);
-  --shadow: 0 24px 58px rgba(15, 23, 42, 0.12);
-}
-
-* {
+﻿.tk-card,
+.tk-card *,
+.tk-btn,
+.tk-btn * {
   box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  width: 100%;
-  min-width: 320px;
-  max-width: 400px;
-  padding: 16px;
   font-family: 'Inter', sans-serif;
-  color: var(--text);
-  background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 28%),
-    linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
 }
 
 .tk-btn,
@@ -51,6 +24,8 @@ body {
   place-items: center;
   box-shadow: 0 16px 28px rgba(37, 99, 235, 0.18);
   transition: transform 0.24s ease, box-shadow 0.24s ease;
+  z-index: 999999;
+  pointer-events: auto;
 }
 
 .tk-btn:hover {
@@ -68,21 +43,23 @@ body {
   justify-content: center;
   align-items: center;
   padding: 16px;
+  user-select: none;
 }
 
 .tk-card {
   position: fixed;
   display: flex;
+  user-select: none;
   flex-direction: column;
   width: min(560px, 96vw);
   min-width: 420px;
   max-width: 96vw;
   min-height: 480px;
   max-height: 92vh;
-  background: var(--surface-soft);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(147, 197, 253, 0.4);
   border-radius: 28px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 24px 58px rgba(15, 23, 42, 0.12);
   resize: both;
   overflow: hidden;
   backdrop-filter: blur(22px);
@@ -156,7 +133,7 @@ body {
 
 .tk-subtitle {
   margin: 6px 0 0;
-  color: var(--muted);
+  color: #475569;
   font-size: 13px;
   line-height: 1.5;
 }
@@ -294,6 +271,7 @@ body {
   box-shadow: 0 28px 60px rgba(15, 23, 42, 0.18);
   width: min(360px, 92vw);
   padding: 22px;
+  user-select: none;
 }
 
 .tk-note-header {
@@ -338,6 +316,7 @@ body {
   line-height: 1.6;
   resize: vertical;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  user-select: text;
 }
 
 .tk-note-input:focus {
