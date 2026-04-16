@@ -158,10 +158,45 @@
 }
 
 .tk-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   padding: 22px;
   flex: 1 1 auto;
   overflow-y: auto;
   min-height: 0;
+}
+
+.tk-results {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.tk-result {
+  background: rgba(248, 251, 255, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 18px;
+  padding: 16px 18px;
+}
+
+.tk-result-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: #1e3a8a;
+  margin-bottom: 10px;
+}
+
+.tk-result-body {
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.tk-result + .tk-result {
+  border-top: 1px solid rgba(148, 163, 184, 0.35);
 }
 
 .tk-content::-webkit-scrollbar {

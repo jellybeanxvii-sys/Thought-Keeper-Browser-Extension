@@ -222,6 +222,7 @@ function openPopup(text) {
   </div>
   <div class="tk-content">
     <p class="tk-snippet">${text}</p>
+    <div class="tk-results"></div>
   </div>
   <div class="tk-actions">
     <button class="tk-action-button" id="explain">
@@ -310,14 +311,32 @@ function openPopup(text) {
     if (btn) btn.remove();
   });
 
+  const resultsContainer = card.querySelector(".tk-results");
+
+  function setPopupResult(type, title, content) {
+    let section = resultsContainer.querySelector(`.tk-result[data-type="${type}"]`);
+    if (!section) {
+      section = document.createElement("div");
+      section.className = `tk-result tk-result-${type}`;
+      section.dataset.type = type;
+      section.innerHTML = `
+        <div class="tk-result-title">${title}</div>
+        <div class="tk-result-body"></div>
+      `;
+      resultsContainer.appendChild(section);
+    } else {
+      const titleEl = section.querySelector(".tk-result-title");
+      if (titleEl) titleEl.textContent = title;
+    }
+    const body = section.querySelector(".tk-result-body");
+    body.textContent = content;
+  }
+
   card.querySelector("#reflect").addEventListener("click", (e) => {
     e.stopPropagation();
     openNoteModal(text);
   });
 
-  // card.querySelector("#explain").addEventListener("click", () => {
-  //   alert("This would simplify text (AI feature to add later).");
-  // });
   card.querySelector("#explain").addEventListener("click", () => {
     chrome.runtime.sendMessage(
       {
@@ -327,20 +346,19 @@ function openPopup(text) {
       (response) => {
         if (chrome.runtime.lastError) {
           console.error("Explain sendMessage error:", chrome.runtime.lastError);
-          alert("Failed to explain text.");
+          setPopupResult("explain", "Explain Like I'm 5", "Failed to explain text. Please try again.");
           return;
         }
 
         if (response && response.success) {
-          alert("Explanation:\n\n" + response.result);
+          setPopupResult("explain", "Explain Like I'm 5", response.result);
         } else {
           console.error(response?.error || "No response from explain handler");
-          alert("Failed to explain text.");
+          setPopupResult("explain", "Explain Like I'm 5", "Failed to explain text. Please try again.");
         }
       }
     );
   });
-
 
   // UPDATED TRANSLATE BUTTON → Opens language menu
   card.querySelector("#translate").addEventListener("click", (e) => {
@@ -356,15 +374,15 @@ function openPopup(text) {
         (response) => {
           if (chrome.runtime.lastError) {
             console.error("Translate sendMessage error:", chrome.runtime.lastError);
-            alert("Translation failed. Please try again.");
+            setPopupResult("translate", "Translation", "Translation failed. Please try again.");
             return;
           }
 
           if (response && response.success) {
-            alert("Translation (" + chosenLang + "):\n\n" + response.translated);
+            setPopupResult("translate", `Translation (${chosenLang})`, response.translated);
           } else {
             console.error("Translate response error:", response);
-            alert("Translation failed. Please try again.");
+            setPopupResult("translate", "Translation", "Translation failed. Please try again.");
           }
         }
       );

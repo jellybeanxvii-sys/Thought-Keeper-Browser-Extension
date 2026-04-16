@@ -44,28 +44,61 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function translateText(text, lang) {
-  try {
-    // Using a simple translation approach - for demo purposes
-    // In production, you'd want a proper translation API
-    const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${lang}`, {
-      method: "GET",
-    });
+  const chunkMaxLength = 450;
 
-    if (!response.ok) {
-      throw new Error(`Translation API error: ${response.status}`);
+  function splitTextIntoChunks(input, maxLength) {
+    if (input.length <= maxLength) return [input];
+
+    const tokens = input.split(/(\s+)/);
+    const chunks = [];
+    let current = "";
+
+    for (const token of tokens) {
+      if (current.length + token.length > maxLength) {
+        if (current.length) {
+          chunks.push(current.trim());
+          current = "";
+        }
+        if (token.length > maxLength) {
+          chunks.push(token);
+        } else {
+          current = token;
+        }
+      } else {
+        current += token;
+      }
     }
 
-    const data = await response.json();
-    if (data.responseData && data.responseData.translatedText) {
-      return data.responseData.translatedText;
-    } else {
-      throw new Error("Translation API returned no translated text");
-    }
-  } catch (err) {
-    console.error("Translation error:", err);
-    // Fallback: return original text with a note
-    return `${text} (Translation unavailable - ${err.message})`;
+    if (current.trim().length) chunks.push(current.trim());
+    return chunks;
   }
+
+  const textChunks = splitTextIntoChunks(text, chunkMaxLength);
+  const translatedParts = [];
+
+  for (const chunk of textChunks) {
+    try {
+      const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=en|${lang}`, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Translation API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.responseData && data.responseData.translatedText) {
+        translatedParts.push(data.responseData.translatedText);
+      } else {
+        throw new Error("Translation API returned no translated text");
+      }
+    } catch (err) {
+      console.error("Translation error for chunk:", err);
+      throw err;
+    }
+  }
+
+  return translatedParts.join(" ");
 }
 
 async function explainText(text) {
