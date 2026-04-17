@@ -150,6 +150,112 @@ function openLanguageMenu(x, y, onSelect) {
   }, 20);
 }
 
+function centerFloatingElement(element) {
+  const width = element.offsetWidth;
+  const height = element.offsetHeight;
+  element.style.left = `${Math.max((window.innerWidth - width) / 2, 16)}px`;
+  element.style.top = `${Math.max((window.innerHeight - height) / 2, 16)}px`;
+}
+
+function setModalWidthForText(modal, text) {
+  const length = text.length;
+  let targetWidth = 360;
+  if (length > 300) targetWidth = 520;
+  if (length > 700) targetWidth = 620;
+  if (length > 1100) targetWidth = 720;
+  modal.style.width = `${Math.min(targetWidth, window.innerWidth - 32)}px`;
+}
+
+function setupResizableWindow(element, options = {}) {
+  const minWidth = options.minWidth || 320;
+  const minHeight = options.minHeight || 220;
+  const maxWidth = options.maxWidth || window.innerWidth - 32;
+  const maxHeight = options.maxHeight || window.innerHeight - 32;
+
+  element.style.position = element.style.position || "fixed";
+  element.style.minWidth = `${minWidth}px`;
+  element.style.minHeight = `${minHeight}px`;
+  element.style.maxWidth = `${maxWidth}px`;
+  element.style.maxHeight = `${maxHeight}px`;
+  element.style.overflow = element.classList.contains("tk-note-modal") ? "auto" : "hidden";
+  element.style.resize = "none";
+
+  const directions = [
+    "top",
+    "right",
+    "bottom",
+    "left",
+    "top-left",
+    "top-right",
+    "bottom-left",
+    "bottom-right",
+  ];
+
+  directions.forEach((direction) => {
+    const handle = document.createElement("div");
+    handle.className = `tk-resize-handle tk-resize-handle--${direction}`;
+    element.appendChild(handle);
+    handle.addEventListener("mousedown", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      initResize(event, element, direction, { minWidth, minHeight, maxWidth, maxHeight });
+    });
+  });
+}
+
+function initResize(event, element, direction, limits) {
+  const startX = event.clientX;
+  const startY = event.clientY;
+  const rect = element.getBoundingClientRect();
+  const startWidth = rect.width;
+  const startHeight = rect.height;
+  const startLeft = rect.left;
+  const startTop = rect.top;
+
+  function onMouseMove(moveEvent) {
+    const dx = moveEvent.clientX - startX;
+    const dy = moveEvent.clientY - startY;
+
+    let width = startWidth;
+    let height = startHeight;
+    let left = startLeft;
+    let top = startTop;
+
+    if (direction.includes("right")) {
+      width = startWidth + dx;
+    }
+    if (direction.includes("left")) {
+      width = startWidth - dx;
+      left = startLeft + dx;
+    }
+    if (direction.includes("bottom")) {
+      height = startHeight + dy;
+    }
+    if (direction.includes("top")) {
+      height = startHeight - dy;
+      top = startTop + dy;
+    }
+
+    width = Math.max(limits.minWidth, Math.min(width, Math.min(limits.maxWidth, window.innerWidth - 16)));
+    height = Math.max(limits.minHeight, Math.min(height, Math.min(limits.maxHeight, window.innerHeight - 16)));
+    left = Math.min(Math.max(left, 8), window.innerWidth - width - 8);
+    top = Math.min(Math.max(top, 8), window.innerHeight - height - 8);
+
+    element.style.width = `${width}px`;
+    element.style.height = `${height}px`;
+    element.style.left = `${left}px`;
+    element.style.top = `${top}px`;
+  }
+
+  function onMouseUp() {
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onMouseUp);
+  }
+
+  document.addEventListener("mousemove", onMouseMove);
+  document.addEventListener("mouseup", onMouseUp);
+}
+
 // note modal
 function openNoteModal(selectedText) {
   const existingModal = document.querySelector(".tk-note-modal");
@@ -174,7 +280,48 @@ function openNoteModal(selectedText) {
   document.body.appendChild(modalOverlay);
 
   const modal = modalOverlay.querySelector(".tk-note-modal");
+  setModalWidthForText(modal, selectedText);
+  setupResizableWindow(modal, {
+    minWidth: 360,
+    minHeight: 280,
+    maxWidth: window.innerWidth - 32,
+    maxHeight: window.innerHeight - 32,
+  });
+  centerFloatingElement(modal);
   modalOverlay.classList.add("show");
+
+  const noteHeader = modal.querySelector(".tk-note-header");
+  noteHeader.style.cursor = "grab";
+  noteHeader.addEventListener("mousedown", (event) => {
+    if (event.button !== 0) return;
+    if (event.target.closest("button")) return;
+    event.preventDefault();
+
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const rect = modal.getBoundingClientRect();
+    const offsetX = startX - rect.left;
+    const offsetY = startY - rect.top;
+    noteHeader.style.cursor = "grabbing";
+
+    function onMouseMove(moveEvent) {
+      const nextLeft = moveEvent.clientX - offsetX;
+      const nextTop = moveEvent.clientY - offsetY;
+      const boundedLeft = Math.min(Math.max(nextLeft, 8), window.innerWidth - modal.offsetWidth - 8);
+      const boundedTop = Math.min(Math.max(nextTop, 8), window.innerHeight - modal.offsetHeight - 8);
+      modal.style.left = `${boundedLeft}px`;
+      modal.style.top = `${boundedTop}px`;
+    }
+
+    function onMouseUp() {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      noteHeader.style.cursor = "grab";
+    }
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  });
 
   modal.querySelector(".tk-note-input").focus();
 
@@ -246,9 +393,14 @@ function openPopup(text) {
   popupOverlay.appendChild(card);
   document.body.appendChild(popupOverlay);
 
-  // initial center positioning without transform so dragging works
-  card.style.left = `${Math.max((window.innerWidth - card.offsetWidth) / 2, 16)}px`;
-  card.style.top = `${Math.max((window.innerHeight - card.offsetHeight) / 2, 16)}px`;
+  setupResizableWindow(card, {
+    minWidth: 420,
+    minHeight: 420,
+    maxWidth: window.innerWidth - 32,
+    maxHeight: window.innerHeight - 32,
+  });
+
+  centerFloatingElement(card);
   card.style.transform = "none";
 
   const header = card.querySelector(".tk-header");
