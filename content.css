@@ -52,9 +52,9 @@
   user-select: none;
   flex-direction: column;
   width: min(560px, 96vw);
-  min-width: 420px;
+  min-width: 360px;
   max-width: 96vw;
-  min-height: 480px;
+  min-height: auto;
   max-height: 92vh;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(147, 197, 253, 0.4);
@@ -64,6 +64,8 @@
   overflow: hidden;
   backdrop-filter: blur(22px);
   animation: popupFade 0.42s ease both;
+  will-change: transform;
+  z-index: 9999;
 }
 
 .tk-resize-handle {
@@ -86,35 +88,35 @@
 
 .tk-resize-handle--top,
 .tk-resize-handle--bottom {
-  left: 0;
-  right: 0;
+  left: -4px;
+  right: -4px;
   height: 12px;
 }
 
 .tk-resize-handle--left,
 .tk-resize-handle--right {
-  top: 0;
-  bottom: 0;
+  top: -4px;
+  bottom: -4px;
   width: 12px;
 }
 
 .tk-resize-handle--top {
-  top: 0;
+  top: -4px;
   cursor: n-resize;
 }
 
 .tk-resize-handle--bottom {
-  bottom: 0;
+  bottom: -4px;
   cursor: s-resize;
 }
 
 .tk-resize-handle--left {
-  left: 0;
+  left: -4px;
   cursor: w-resize;
 }
 
 .tk-resize-handle--right {
-  right: 0;
+  right: -4px;
   cursor: e-resize;
 }
 
@@ -130,26 +132,26 @@
 }
 
 .tk-resize-handle--top-left {
-  top: 0;
-  left: 0;
+  top: -4px;
+  left: -4px;
   cursor: nwse-resize;
 }
 
 .tk-resize-handle--top-right {
-  top: 0;
-  right: 0;
+  top: -4px;
+  right: -4px;
   cursor: nesw-resize;
 }
 
 .tk-resize-handle--bottom-left {
-  bottom: 0;
-  left: 0;
+  bottom: -4px;
+  left: -4px;
   cursor: nesw-resize;
 }
 
 .tk-resize-handle--bottom-right {
-  bottom: 0;
-  right: 0;
+  bottom: -4px;
+  right: -4px;
   cursor: nwse-resize;
 }
 
@@ -252,13 +254,14 @@
   flex: 1 1 auto;
   overflow-y: auto;
   min-height: 0;
+  max-height: 100%;
 }
 
 .tk-results {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  margin-top: 18px;
+  margin: 0;
 }
 
 .tk-result {
@@ -314,10 +317,11 @@
 
 .tk-actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 12px;
-  padding: 0 22px 22px;
+  padding: 16px 22px 22px;
   flex: 0 0 auto;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.6));
 }
 
 .tk-action-button {
@@ -325,15 +329,15 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-height: 52px;
-  padding: 14px 16px;
+  padding: 12px 14px;
   border: 1px solid transparent;
   border-radius: 16px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.93), rgba(219, 234, 254, 0.88));
   color: #1f2937;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 550;
   cursor: pointer;
   transition: transform 0.24s ease, box-shadow 0.24s ease, background 0.24s ease, border-color 0.24s ease;
   box-shadow: 0 12px 26px rgba(59, 130, 246, 0.14);
@@ -371,15 +375,16 @@
 }
 
 .button-icon {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: 10px;
   background: rgba(59, 130, 246, 0.12);
   color: #2563eb;
   font-size: 16px;
+  flex-shrink: 0;
 }
 
 .tk-action-button span:last-child {
@@ -392,18 +397,38 @@
 }
 
 .tk-note-modal {
-  position: absolute;
-  background: #ffffff;
-  border-radius: 24px;
-  border: 1px solid rgba(147, 197, 253, 0.28);
-  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.18);
+  position: fixed;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.12),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
   width: min(560px, 90vw);
   max-width: 90vw;
   min-width: 320px;
   max-height: 90vh;
-  padding: 22px;
+  padding: 24px;
   user-select: none;
   overflow: auto;
+  will-change: transform;
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  animation: modalSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: 'Inter', sans-serif;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .tk-note-header {
@@ -411,8 +436,10 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   cursor: grab;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(147, 197, 253, 0.15);
 }
 
 .tk-note-header:active {
@@ -421,15 +448,33 @@
 
 .tk-note-header span {
   font-weight: 700;
-  color: #1e3a8a;
+  font-size: 18px;
+  color: #1d4ed8;
+  letter-spacing: -0.3px;
 }
 
 .tk-close-note {
-  background: transparent;
+  background: rgba(59, 130, 246, 0.1);
   border: none;
-  color: #475569;
-  font-size: 20px;
+  color: #2563eb;
   cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.tk-close-note:hover {
+  background: rgba(59, 130, 246, 0.2);
+  transform: scale(1.05);
+}
+
+.tk-close-note svg {
+  stroke-width: 2.5;
 }
 
 .tk-note-snippet {
@@ -445,17 +490,118 @@
 
 .tk-note-input {
   width: 100%;
-  min-height: 120px;
-  padding: 14px;
-  border-radius: 18px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: #f8fbff;
+  min-height: 100px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(147, 197, 253, 0.2);
+  background: rgba(248, 251, 255, 0.7);
+  backdrop-filter: blur(8px);
   font-family: 'Inter', sans-serif;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.65;
+  color: #1f2937;
   resize: vertical;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   user-select: text;
+}
+
+.tk-note-input::placeholder {
+  color: rgba(107, 114, 128, 0.5);
+}
+
+.tk-note-input:hover {
+  border-color: rgba(59, 130, 246, 0.3);
+  background: rgba(248, 251, 255, 0.85);
+}
+
+.tk-note-input:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(248, 251, 255, 0.95);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 
+              inset 0 1px 2px rgba(59, 130, 246, 0.08);
+}
+
+.tk-features-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+  max-height: 40vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.tk-features-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tk-features-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tk-features-container::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.2);
+  border-radius: 3px;
+}
+
+.tk-features-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.4);
+}
+
+.tk-feature-section {
+  background: rgba(248, 251, 255, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(147, 197, 253, 0.15);
+  border-radius: 14px;
+  padding: 12px 14px;
+  transition: all 0.2s ease;
+  animation: featureFadeIn 0.35s ease-out backwards;
+}
+
+.tk-feature-section:nth-child(1) { animation-delay: 0.05s; }
+.tk-feature-section:nth-child(2) { animation-delay: 0.1s; }
+.tk-feature-section:nth-child(3) { animation-delay: 0.15s; }
+
+@keyframes featureFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tk-feature-section:hover {
+  background: rgba(248, 251, 255, 0.8);
+  border-color: rgba(147, 197, 253, 0.25);
+}
+
+.tk-feature-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tk-feature-title {
+  font-weight: 600;
+  font-size: 12px;
+  color: #1d4ed8;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.tk-feature-content {
+  margin: 0;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .tk-note-input:focus {
@@ -468,29 +614,73 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(147, 197, 253, 0.1);
+  animation: actionsFadeIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s backwards;
+}
+
+@keyframes actionsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tk-save-note,
 .tk-cancel-note {
-  min-width: 96px;
-  padding: 12px 14px;
-  border-radius: 14px;
+  min-width: 90px;
+  padding: 10px 16px;
+  border-radius: 12px;
   border: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-}
-
-.tk-save-note {
-  background: linear-gradient(135deg, #2563eb, #60a5fa);
-  color: #ffffff;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: 0.2px;
 }
 
 .tk-cancel-note {
-  background: rgba(226, 232, 240, 0.96);
+  background: rgba(226, 232, 240, 0.6);
   color: #334155;
+  border: 1px solid rgba(203, 213, 225, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.tk-cancel-note:hover {
+  background: rgba(226, 232, 240, 0.8);
+  border-color: rgba(203, 213, 225, 0.5);
+  transform: translateY(-1px);
+}
+
+.tk-cancel-note:active {
+  transform: translateY(0);
+  background: rgba(226, 232, 240, 0.95);
+}
+
+.tk-save-note {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(96, 165, 250, 0.85));
+  color: #ffffff;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+.tk-save-note:hover {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 1), rgba(96, 165, 250, 0.95));
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.tk-save-note:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
 }
 
 .tk-save-note:hover,
@@ -501,14 +691,15 @@
 .tk-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.24);
+  background: rgba(15, 23, 42, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.22s ease;
+  transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 10000;
+  backdrop-filter: blur(2px);
 }
 
 .tk-modal-overlay.show {
@@ -520,8 +711,9 @@
   .tk-header,
   .tk-content,
   .tk-actions {
-    padding-left: 18px;
-    padding-right: 18px;
+    padding-left: 15px;
+    padding-right: 15px;
+
   }
 
   .tk-snippet {

@@ -44,6 +44,8 @@ body {
   margin-right: 10px;
   font-size: 30px;
   vertical-align: middle;
+  text-shadow: 0 0 1px rgba(0,0,0,0.1);
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 .vault-subtitle {
@@ -78,15 +80,19 @@ body {
 .thought {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 255, 0.92));
   border: 1px solid rgba(59, 130, 246, 0.14);
-  border-radius: 24px;
-  padding: 18px;
-  box-shadow: 0 18px 38px rgba(59, 130, 246, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.06);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .thought:hover {
   transform: translateY(-1px);
-  box-shadow: 0 22px 42px rgba(59, 130, 246, 0.12);
+  box-shadow: 0 18px 38px rgba(59, 130, 246, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .thought-header {
@@ -156,6 +162,44 @@ body {
   line-height: 1.65;
 }
 
+.thought-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.thought-feature-box {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(248, 251, 255, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.thought-feature-label {
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-right: 4px;
+}
+
+.thought-original-box {
+  background: rgba(248, 251, 255, 0.98);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.thought-explain-box {
+  background: rgba(254, 242, 242, 0.95);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.thought-translate-box {
+  background: rgba(240, 253, 244, 0.95);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
 .thought-edit-textarea {
   width: 100%;
   min-height: 84px;
@@ -213,6 +257,330 @@ body {
   border-radius: 10px;
 }
 
+/* Card components - new layout */
+.thought-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 255, 0.92));
+  border: 1px solid rgba(59, 130, 246, 0.14);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.06);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.thought-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 42px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.24);
+}
+
+.thought-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.thought-card-title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.5;
+  max-height: 3em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.thought-card-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.thought-card-meta {
+  font-size: 12px;
+  color: #64748b;
+  margin: -4px 0 0 0;
+}
+
+.thought-card-meta small {
+  display: block;
+}
+
+.thought-card-meta a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.thought-card-meta a:hover {
+  text-decoration: underline;
+}
+
+.thought-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.thought-note-preview {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(248, 251, 255, 0.8);
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.5;
+  max-height: 2.5em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.thought-features-indicator {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.feature-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.1);
+  color: #1e40af;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.show-more-btn {
+  align-self: flex-start;
+  padding: 8px 14px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 10px;
+  background: rgba(59, 130, 246, 0.08);
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.show-more-btn:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* Detail modal */
+.thought-detail-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.thought-detail-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.28);
+  backdrop-filter: blur(4px);
+  z-index: -1;
+}
+
+.thought-detail-content {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid rgba(59, 130, 246, 0.14);
+  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.18);
+  width: 100%;
+  max-width: 540px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.2s ease;
+}
+
+.thought-detail-modal.show .thought-detail-content {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.thought-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 22px;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+  flex-shrink: 0;
+}
+
+.thought-detail-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+.thought-detail-close {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  transition: color 0.2s ease;
+}
+
+.thought-detail-close:hover {
+  color: #1f2937;
+}
+
+.thought-detail-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-section-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e3a8a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-section-content {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(248, 251, 255, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.detail-meta {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.detail-meta .detail-section-content {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.detail-meta a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.detail-meta a:hover {
+  text-decoration: underline;
+}
+
+.thought-detail-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 22px;
+  border-top: 1px solid rgba(59, 130, 246, 0.1);
+  flex-shrink: 0;
+}
+
+.thought-detail-edit-btn,
+.thought-detail-read-less {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.thought-detail-edit-btn {
+  background: rgba(59, 130, 246, 0.1);
+  color: #1d4ed8;
+}
+
+.thought-detail-edit-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.thought-detail-read-less {
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  color: white;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+}
+
+.thought-detail-read-less:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px rgba(37, 99, 235, 0.28);
+}
+
+/* Edit form */
+.thought-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(248, 251, 255, 0.5);
+  border: 1px dashed rgba(59, 130, 246, 0.2);
+}
+
+/* Scrollbar styling */
+.thought-detail-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.thought-detail-body::-webkit-scrollbar-track {
+  background: rgba(203, 213, 225, 0.15);
+  border-radius: 999px;
+}
+
+.thought-detail-body::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 999px;
+}
+
+.thought-detail-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.5);
+}
+
 @media (max-width: 360px) {
   body {
     padding: 14px;
@@ -225,5 +593,14 @@ body {
 
   .delete-all {
     width: 100%;
+  }
+
+  .thought-card-title {
+    font-size: 13px;
+  }
+
+  .thought-detail-content {
+    max-width: 100%;
+    max-height: 90vh;
   }
 }

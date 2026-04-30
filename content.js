@@ -257,23 +257,70 @@ function initResize(event, element, direction, limits) {
 }
 
 // note modal
-function openNoteModal(selectedText) {
+function openNoteModal(selectedText, results = {}) {
   const existingModal = document.querySelector(".tk-note-modal");
   if (existingModal) existingModal.remove();
 
   const modalOverlay = document.createElement("div");
   modalOverlay.className = "tk-modal-overlay";
-  modalOverlay.innerHTML = `
+  
+  // Build the features HTML
+  let featuresHTML = '';
+  
+  // Original text (always shown)
+  featuresHTML += `
+    <div class="tk-feature-section tk-feature-original">
+      <div class="tk-feature-header">
+        <span class="tk-feature-title">Original Text</span>
+      </div>
+      <p class="tk-feature-content">${selectedText}</p>
+    </div>
+  `;
+  
+  // Explanation (if exists)
+  if (results.explain && results.explain.body) {
+    featuresHTML += `
+      <div class="tk-feature-section tk-feature-explain">
+        <div class="tk-feature-header">
+          <span class="tk-feature-title">Explanation</span>
+        </div>
+        <p class="tk-feature-content">${results.explain.body}</p>
+      </div>
+    `;
+  }
+  
+  // Translation (if exists)
+  if (results.translate && results.translate.body) {
+    const langMatch = results.translate.title.match(/\((.+?)\)/);
+    const langCode = langMatch ? langMatch[1] : 'Unknown';
+    featuresHTML += `
+      <div class="tk-feature-section tk-feature-translate">
+        <div class="tk-feature-header">
+          <span class="tk-feature-title">Translation (${langCode})</span>
+        </div>
+        <p class="tk-feature-content">${results.translate.body}</p>
+      </div>
+    `;
+  }
+  
+   modalOverlay.innerHTML = `
     <div class="tk-note-modal">
       <div class="tk-note-header">
-        <span>Add Your Reflection ✏️</span>
-        <button class="tk-close-note">×</button>
+        <span>Add Your Reflection</span>
+        <button class="tk-close-note" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
-      <p class="tk-note-snippet">${selectedText}</p>
-      <textarea class="tk-note-input" placeholder="Write your note here..."></textarea>
+      <div class="tk-features-container">
+        ${featuresHTML}
+      </div>
+      <textarea class="tk-note-input" placeholder="Write your reflection..."></textarea>
       <div class="tk-note-actions">
-        <button class="tk-save-note">💾 Save</button>
-        <button class="tk-cancel-note">✖ Cancel</button>
+        <button class="tk-cancel-note">Cancel</button>
+        <button class="tk-save-note">Save</button>
       </div>
     </div>
   `;
@@ -302,13 +349,15 @@ function openNoteModal(selectedText) {
     const rect = modal.getBoundingClientRect();
     const offsetX = startX - rect.left;
     const offsetY = startY - rect.top;
+    const modalWidth = modal.offsetWidth;
+    const modalHeight = modal.offsetHeight;
     noteHeader.style.cursor = "grabbing";
 
     function onMouseMove(moveEvent) {
       const nextLeft = moveEvent.clientX - offsetX;
       const nextTop = moveEvent.clientY - offsetY;
-      const boundedLeft = Math.min(Math.max(nextLeft, 8), window.innerWidth - modal.offsetWidth - 8);
-      const boundedTop = Math.min(Math.max(nextTop, 8), window.innerHeight - modal.offsetHeight - 8);
+      const boundedLeft = Math.min(Math.max(nextLeft, 8), window.innerWidth - modalWidth - 8);
+      const boundedTop = Math.min(Math.max(nextTop, 8), window.innerHeight - modalHeight - 8);
       modal.style.left = `${boundedLeft}px`;
       modal.style.top = `${boundedTop}px`;
     }
@@ -336,7 +385,7 @@ function openNoteModal(selectedText) {
   modal.querySelector(".tk-save-note").addEventListener("click", () => {
     const note = modal.querySelector(".tk-note-input").value.trim();
     if (note) {
-      saveThought(selectedText, note);
+      saveThought(selectedText, note, results);
       closeModal();
       alert("Note saved!");
     } else {
@@ -365,7 +414,12 @@ function openPopup(text) {
         <p class="tk-subtitle">Smart actions for your selected text</p>
       </div>
     </div>
-    <button class="tk-close" aria-label="Close popup">×</button>
+    <button class="tk-close" aria-label="Close popup">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
   </div>
   <div class="tk-content">
     <p class="tk-snippet">${text}</p>
@@ -373,11 +427,11 @@ function openPopup(text) {
   </div>
   <div class="tk-actions">
     <button class="tk-action-button" id="explain">
-      <span class="button-icon">💡</span>
-      <span>Explain Like I'm 5</span>
+      <span class="button-icon">🥹</span>
+      <span>Explain like I'm 5</span>
     </button>
     <button class="tk-action-button" id="translate">
-      <span class="button-icon">🌍</span>
+      <span class="button-icon">🌎</span>
       <span>Translate</span>
     </button>
     <button class="tk-action-button" id="reflect">
@@ -394,8 +448,8 @@ function openPopup(text) {
   document.body.appendChild(popupOverlay);
 
   setupResizableWindow(card, {
-    minWidth: 420,
-    minHeight: 420,
+    minWidth: 360,
+    minHeight: 280,
     maxWidth: window.innerWidth - 32,
     maxHeight: window.innerHeight - 32,
   });
@@ -416,14 +470,16 @@ function openPopup(text) {
     const rect = card.getBoundingClientRect();
     const offsetX = startX - rect.left;
     const offsetY = startY - rect.top;
+    const cardWidth = card.offsetWidth;
+    const cardHeight = card.offsetHeight;
 
     header.style.cursor = "grabbing";
 
     function onMouseMove(moveEvent) {
       const nextLeft = moveEvent.clientX - offsetX;
       const nextTop = moveEvent.clientY - offsetY;
-      const boundedLeft = Math.min(Math.max(nextLeft, 8), window.innerWidth - card.offsetWidth - 8);
-      const boundedTop = Math.min(Math.max(nextTop, 8), window.innerHeight - card.offsetHeight - 8);
+      const boundedLeft = Math.min(Math.max(nextLeft, 8), window.innerWidth - cardWidth - 8);
+      const boundedTop = Math.min(Math.max(nextTop, 8), window.innerHeight - cardHeight - 8);
       card.style.left = `${boundedLeft}px`;
       card.style.top = `${boundedTop}px`;
     }
@@ -486,7 +542,14 @@ function openPopup(text) {
 
   card.querySelector("#reflect").addEventListener("click", (e) => {
     e.stopPropagation();
-    openNoteModal(text);
+    const results = {};
+    resultsContainer.querySelectorAll('.tk-result').forEach(resultEl => {
+      const type = resultEl.dataset.type;
+      const title = resultEl.querySelector('.tk-result-title').textContent;
+      const body = resultEl.querySelector('.tk-result-body').textContent;
+      results[type] = { title, body };
+    });
+    openNoteModal(text, results);
   });
 
   card.querySelector("#explain").addEventListener("click", () => {
@@ -544,12 +607,15 @@ function openPopup(text) {
 
 
 // save thought
-function saveThought(original, note) {
+function saveThought(original, note, results = {}) {
   chrome.storage.local.get(["thoughts"], (data) => {
     const thoughts = data.thoughts || [];
     thoughts.push({
       original,
       note,
+      explanation: results.explain?.body || null,
+      translation: results.translate?.body || null,
+      translationLang: results.translate?.title || null,
       url: window.location.href,
       date: new Date().toLocaleString(),
     });
